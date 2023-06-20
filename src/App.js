@@ -118,6 +118,14 @@ function App() {
 		setCameraOff(!cameraOff);
 	};
 
+	const createUserSocketConn = () => {
+		// TODO: 프론트에서 이 부분에 recoil로 저장된 user Id를 보내주면 된다.
+		/* 여기에 보내준 유저의 아이디는 실제 아이디로 부탁드립니다. (index 말고) */
+		socket.emit("setUserName", {
+			user_id: "유저아이디"
+		})
+	}
+
 	return (
 		<>
 			<h1 style={{ textAlign: "center", color: '#fff' }}>화상</h1>
@@ -150,7 +158,7 @@ function App() {
 						style={{ marginBottom: "20px" }}
 					/>
 					<Button variant="contained" color="primary" style={{ marginBottom: "2rem" }} onClick={() => {
-						// TODO: 프론트에서 이 부분에 recoil로 저장된 user Id를 보내주면 된다.
+						// TODO: 소켓-유저 아이디 연결이 완료되면 버튼과 socket 함수를 제거해야 한다.
 						socket.emit("setUserName", {
 							user_id: name
 						})
