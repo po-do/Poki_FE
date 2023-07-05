@@ -16,10 +16,7 @@ import {
   isAfter,
 } from "date-fns";
 import { Fragment, useEffect, useState } from "react";
-import {
-  missionReadChild,
-  missionDelete,
-} from "../../api/mission.js";
+import { missionReadChild, missionDelete } from "../../api/mission.js";
 import { getWishlistByUserId } from "../../api/wishlist.js";
 import { BsGift } from "react-icons/bs";
 import FailModal from "../../components/Modal/FailModal";
@@ -109,163 +106,159 @@ export default function ParentCalendar() {
   );
 
   return (
-    <div className="pt-16">
+    <div className="pt-16 text-2xl">
       <div className="max-w-md px-4 mx-auto sm:px-7 md:max-w-4xl md:px-6">
-        <div className="md:grid md:grid-cols-2 md:divide-x md:divide-gray-200">
-          <div className="md:pr-14">
-            <div className="flex items-center">
-              <h2 className="flex-auto font-semibold text-gray-900 ml-4">
-                {format(firstDayCurrentMonth, "MMMM")}
-              </h2>
-              <button
-                type="button"
-                onClick={previousMonth}
-                className="-my-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
+        {/* Calendar */}
+        <div className="border shadow-2xl rounded-2xl">
+          <div className="flex items-center">
+            <h2 className="flex-auto font-semibold text-gray-900 ml-12 mt-10">
+              {format(firstDayCurrentMonth, "MMMM")}
+            </h2>
+            <button
+              type="button"
+              onClick={previousMonth}
+              className="-my-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500 mt-2"
+            >
+              <span className="sr-only">Previous month</span>
+              <HiChevronLeft className="w-5 h-5" aria-hidden="true" />
+            </button>
+            <button
+              onClick={nextMonth}
+              type="button"
+              className="-my-1.5 ml-2 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500 mr-6 mt-2"
+            >
+              <span className="sr-only">Next month</span>
+              <HiChevronRight className="w-5 h-5" aria-hidden="true" />
+            </button>
+          </div>
+          <div className="grid grid-cols-7 mt-10 text-lg leading-6 text-center text-gray-500">
+            <div>일</div>
+            <div>월</div>
+            <div>화</div>
+            <div>수</div>
+            <div>목</div>
+            <div>금</div>
+            <div>토</div>
+          </div>
+          <div className="grid grid-cols-7 mt-2 text-base">
+            {days.map((day, dayIdx) => (
+              <div
+                key={day.toString()}
+                className={classNames(
+                  dayIdx === 0 && colStartClasses[getDay(day)],
+                  "py-4"
+                )}
               >
-                <span className="sr-only">Previous month</span>
-                <HiChevronLeft className="w-5 h-5" aria-hidden="true" />
-              </button>
-              <button
-                onClick={nextMonth}
-                type="button"
-                className="-my-1.5 -mr-1.5 ml-2 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
-              >
-                <span className="sr-only">Next month</span>
-                <HiChevronRight className="w-5 h-5" aria-hidden="true" />
-              </button>
-            </div>
-            <div className="grid grid-cols-7 mt-10 text-xs leading-6 text-center text-gray-500">
-              <div>일</div>
-              <div>월</div>
-              <div>화</div>
-              <div>수</div>
-              <div>목</div>
-              <div>금</div>
-              <div>토</div>
-            </div>
-            <div className="grid grid-cols-7 mt-2 text-sm">
-              {days.map((day, dayIdx) => (
-                <div
-                  key={day.toString()}
+                <button
+                  type="button"
+                  onClick={() => setSelectedDay(day)}
                   className={classNames(
-                    dayIdx === 0 && colStartClasses[getDay(day)],
-                    "py-1.5"
+                    isEqual(day, selectedDay) && "text-white",
+                    !isEqual(day, selectedDay) &&
+                      isToday(day) &&
+                      "text-red-500",
+                    !isEqual(day, selectedDay) &&
+                      !isToday(day) &&
+                      isSameMonth(day, firstDayCurrentMonth) &&
+                      "text-gray-900",
+                    !isEqual(day, selectedDay) &&
+                      !isToday(day) &&
+                      !isSameMonth(day, firstDayCurrentMonth) &&
+                      "text-gray-400",
+                    isEqual(day, selectedDay) && isToday(day) && "bg-red-500",
+                    isEqual(day, selectedDay) && !isToday(day) && "bg-gray-900",
+                    !isEqual(day, selectedDay) && "hover:bg-gray-200",
+                    (isEqual(day, selectedDay) || isToday(day)) &&
+                      "font-semibold",
+                    "mx-auto flex h-8 w-8 items-center justify-center rounded-full"
                   )}
                 >
-                  <button
-                    type="button"
-                    onClick={() => setSelectedDay(day)}
-                    className={classNames(
-                      isEqual(day, selectedDay) && "text-white",
-                      !isEqual(day, selectedDay) &&
-                        isToday(day) &&
-                        "text-red-500",
-                      !isEqual(day, selectedDay) &&
-                        !isToday(day) &&
-                        isSameMonth(day, firstDayCurrentMonth) &&
-                        "text-gray-900",
-                      !isEqual(day, selectedDay) &&
-                        !isToday(day) &&
-                        !isSameMonth(day, firstDayCurrentMonth) &&
-                        "text-gray-400",
-                      isEqual(day, selectedDay) && isToday(day) && "bg-red-500",
-                      isEqual(day, selectedDay) &&
-                        !isToday(day) &&
-                        "bg-gray-900",
-                      !isEqual(day, selectedDay) && "hover:bg-gray-200",
-                      (isEqual(day, selectedDay) || isToday(day)) &&
-                        "font-semibold",
-                      "mx-auto flex h-8 w-8 items-center justify-center rounded-full"
-                    )}
-                  >
-                    <time dateTime={format(day, "yyyy-MM-dd")}>
-                      {format(day, "d")}
-                    </time>
-                  </button>
+                  <time dateTime={format(day, "yyyy-MM-dd")}>
+                    {format(day, "d")}
+                  </time>
+                </button>
 
-                  <div className="w-1 h-1 mx-auto mt-1">
-                    {/* 받은 선물 표시 */}
-                    {givenList.some((gift) =>
-                      isSameDay(parseISO(gift.GivenAt), day)
-                    ) && (
-                      <div className="mb-2 mt-2">
-                        <BsGift />
-                      </div>
-                    )}
-                    {/* 완료된 미션 */}
-                    {completedMissions.some((mission) =>
-                      isSameDay(parseISO(mission.completed_date), day)
-                    ) && (
-                      <div className="w-2 h-2 rounded-full bg-indigo-500"></div>
-                    )}
-                    {/* 예약된 미션 */}
-                    {reservedMissions.some(
-                      (mission) =>
-                        isAfter(parseISO(mission.created_date), new Date()) &&
-                        isSameDay(parseISO(mission.created_date), day)
-                    ) && (
-                      <div className="w-2 h-2 rounded-full bg-gray-500"></div>
-                    )}
-                  </div>
+                <div className="relative w-1 h-1 mx-auto mt-1 mb-4">
+                  {/* 받은 선물 표시 */}
+                  {givenList.some((gift) =>
+                    isSameDay(parseISO(gift.GivenAt), day)
+                  ) && (
+                    <div className="absolute left-8 mb-2 mt-1">
+                      <BsGift />
+                    </div>
+                  )}
+                  {/* 완료된 미션 */}
+                  {completedMissions.some((mission) =>
+                    isSameDay(parseISO(mission.completed_date), day)
+                  ) && (
+                    <div className="w-6 h-6 rounded-full bg-indigo-500 text-white text-xs text-center py-1">포도</div>
+                  )}
+                  {/* 예약된 미션 */}
+                  {reservedMissions.some(
+                    (mission) =>
+                      isAfter(parseISO(mission.created_date), new Date()) &&
+                      isSameDay(parseISO(mission.created_date), day)
+                  ) && <div className="w-6 h-6 rounded-full bg-gray-500 text-white text-xs text-center py-1">예약</div>}
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-          <section className="mt-12 md:mt-0 md:pl-14">
-            <h2 className="font-semibold text-gray-900">미션</h2>
-            <ol className="space-y-1 text-sm leading-6 text-gray-500">
-              {selectedCompDayMeetings.length > 0 ? (
-                selectedCompDayMeetings.map((mission) => (
+        </div>
+
+        {/* section */}
+        <section className="mt-12 md:mt-4 border-t border-gray">
+          <h2 className="font-semibold text-gray-900 mt-4 mb-2">완료된 미션</h2>
+          <ol className="space-y-1 text-lg leading-6 text-gray-500">
+            {selectedCompDayMeetings.length > 0 ? (
+              selectedCompDayMeetings.map((mission) => (
+                <Meeting
+                  key={mission.id}
+                  Mission={mission}
+                  given_flag={false}
+                />
+              ))
+            ) : (
+              <p className="flex items-center px-1 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
+                미션이 없습니다.
+              </p>
+            )}
+          </ol>
+
+          <section className="border-t border-gray">
+            <h2 className="font-semibold text-gray-900 mt-4 mb-2">예약 미션</h2>
+            <ol className="space-y-1 text-lg leading-6 text-gray-500">
+              {selectedResDayMeetings.length > 0 ? (
+                selectedResDayMeetings.map((mission) => (
                   <Meeting
                     key={mission.id}
                     Mission={mission}
+                    flag={true}
                     given_flag={false}
                   />
                 ))
               ) : (
                 <p className="flex items-center px-1 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
-                  미션이 없습니다.
+                  예약된 미션이 없습니다.
                 </p>
               )}
             </ol>
-
-            <section>
-              <h2 className="font-semibold text-gray-900 mt-4">예약 미션</h2>
-              <ol className="space-y-1 text-sm leading-6 text-gray-500">
-                {selectedResDayMeetings.length > 0 ? (
-                  selectedResDayMeetings.map((mission) => (
-                    <Meeting
-                      key={mission.id}
-                      Mission={mission}
-                      flag={true}
-                      given_flag={false}
-                    />
-                  ))
-                ) : (
-                  <p className="flex items-center px-1 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
-                    예약된 미션이 없습니다.
-                  </p>
-                )}
-              </ol>
-            </section>
-
-            {/* 받은 선물 부분 */}
-            <section>
-              <h2 className="font-semibold text-gray-900 mt-4">받은 선물</h2>
-              <ol className="space-y-1 text-sm leading-6 text-gray-500">
-                {selectedGiftDayMeetings.length > 0 ? (
-                  selectedGiftDayMeetings.map((gift) => (
-                    <Meeting key={gift.id} Mission={gift} given_flag={true} />
-                  ))
-                ) : (
-                  <p className="flex items-center px-1 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
-                    받은 선물이 없습니다.
-                  </p>
-                )}
-              </ol>
-            </section>
           </section>
-        </div>
+          {/* 받은 선물 부분 */}
+          <section className="border-t border-gray">
+            <h2 className="font-semibold text-gray-900 mt-4 mb-2">받은 선물</h2>
+            <ol className="space-y-1 text-sm leading-6 text-gray-500">
+              {selectedGiftDayMeetings.length > 0 ? (
+                selectedGiftDayMeetings.map((gift) => (
+                  <Meeting key={gift.id} Mission={gift} given_flag={true} />
+                ))
+              ) : (
+                <p className="text-lg flex items-center px-1 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
+                  받은 선물이 없습니다.
+                </p>
+              )}
+            </ol>
+          </section>
+        </section>
       </div>
     </div>
   );
@@ -284,7 +277,7 @@ function Meeting({ Mission, flag, given_flag }) {
     setUpdateModal(false);
   };
 
-// 미션 삭제
+  // 미션 삭제
   const openFailModal = () => {
     setFailModal(true);
   };
@@ -311,7 +304,7 @@ function Meeting({ Mission, flag, given_flag }) {
   };
 
   return (
-    <li className="flex items-center px-1 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
+    <li className="flex items-center px-2 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
       <div className="flex-auto">
         {given_flag === false && (
           <>
@@ -333,13 +326,13 @@ function Meeting({ Mission, flag, given_flag }) {
             <div className="flex items-center">
               <div>
                 <img
-                  className="inline-block h-36 w-36"
+                  className="inline-block h-36 w-36 rounded-xl"
                   src={Mission.ProductImage}
                   alt=""
                 />
               </div>
               <div className="ml-6">
-                <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900">
+                <p className="text-lg text-gray-700 group-hover:text-gray-900">
                   {Mission.ProductName}
                 </p>
               </div>
@@ -412,15 +405,14 @@ function Meeting({ Mission, flag, given_flag }) {
       {failModal && (
         <FailModal closeModal={closeFailModal} message="삭제되었습니다." />
       )}
-      
+
       {updateModal && (
         <MissionReserveModal
-        closeModal={closeUpdateModal}
-        Mission = {Mission}
-        flag = {true}
-      />
+          closeModal={closeUpdateModal}
+          Mission={Mission}
+          flag={true}
+        />
       )}
-
     </li>
   );
 }

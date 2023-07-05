@@ -169,8 +169,8 @@ export default function ParentFormat() {
     socket.emit("create-room", { roomName, user }, (response) => {
       if (response.number === 2) {
         socket.emit("join-room", response.payload, () => {
-          console.log("join-room");
-          console.log(response.payload);
+          // console.log("join-room");
+          // console.log(response.payload);
           navigate(`/chat/${response.payload}`);
         }); // 이미 채팅방이 존재할 경우 바로 입장
       }
@@ -259,7 +259,7 @@ export default function ParentFormat() {
                                     className={classNames(
                                       item.current
                                         ? "bg-indigo-700 text-white"
-                                        : "text-indigo-200 hover:text-white hover:bg-indigo-700",
+                                        : "text-indigo-200 hover:text-white hover:bg-indigo-800",
                                       "group flex gap-x-3 rounded-md p-2 text-xl leading-6 font-semibold"
                                     )}
                                   >
@@ -282,7 +282,7 @@ export default function ParentFormat() {
                                   className={classNames(
                                     false
                                       ? "bg-indigo-700 text-white"
-                                      : "text-indigo-200 hover:text-white hover:bg-indigo-700",
+                                      : "text-indigo-200 hover:text-white hover:bg-indigo-800",
                                     "group flex gap-x-3 rounded-md p-2 text-lg leading-6 font-semibold"
                                   )}
                                 >
@@ -316,7 +316,7 @@ export default function ParentFormat() {
                                       "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                                     )}
                                   >
-                                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-indigo-400 bg-indigo-500 text-[0.625rem] font-medium text-white">
+                                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-indigo-400 bg-indigo-500 text-[0.625rem] font-semibold text-white">
                                       {team.initial}
                                     </span>
                                     <span className="truncate">
@@ -416,7 +416,7 @@ export default function ParentFormat() {
                             className={classNames(
                               item.current
                                 ? "bg-indigo-700 text-white"
-                                : "text-indigo-200 hover:text-white hover:bg-indigo-700",
+                                : "text-indigo-200 hover:text-white hover:bg-indigo-800",
                               "group flex gap-x-3 rounded-md p-2 text-lg leading-6 font-semibold"
                             )}
                           >
@@ -439,7 +439,7 @@ export default function ParentFormat() {
                           className={classNames(
                             false
                               ? "bg-indigo-700 text-white"
-                              : "text-indigo-200 hover:text-white hover:bg-indigo-700",
+                              : "text-indigo-200 hover:text-white hover:bg-indigo-800",
                             "group flex gap-x-3 rounded-md p-2 text-lg leading-6 font-semibold"
                           )}
                         >
@@ -473,7 +473,7 @@ export default function ParentFormat() {
                               "group flex gap-x-3 rounded-md p-2 leading-6 font-semibold"
                             )}
                           >
-                            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-indigo-400 bg-indigo-500 text-[0.625rem] font-medium text-white">
+                            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-indigo-400 bg-indigo-500 text-[0.625rem] font-semibold text-white">
                               {team.initial}
                             </span>
                             <span className="truncate">{team.name}</span>
@@ -580,7 +580,13 @@ export default function ParentFormat() {
                   /> */}
 
                   {/* Profile dropdown */}
-                  <Menu as="div" className="relative">
+                  <Menu as="div" className="relative flex">
+                    <a
+                      className="my-auto mr-4 rounded-md border border-transparent bg-indigo-600 px-2 py-1 text-sm text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+                      href="/"
+                    >
+                      로그아웃
+                    </a>
                     <Menu.Button className="-m-1.5 flex items-center p-1.5">
                       <span className="sr-only">Open user menu</span>
                       <img

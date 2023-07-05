@@ -7,7 +7,7 @@ import grapeLogo from "../../icons/mstile-310x310.png";
 import FailModal from "../../components/Modal/FailModal";
 import InstallAlarm from "./InstallAlarm";
 
-export default function Login({token}) {
+export default function Login({ token }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   // 저장할 요소 : id, real id, state
@@ -23,7 +23,7 @@ export default function Login({token}) {
   );
 
   const handleLogIn = async () => {
-    console.log("로그인");
+    // console.log("로그인");
     // console.log(user);
     // console.log(email, password);
     try {
@@ -39,7 +39,7 @@ export default function Login({token}) {
         id: userInfo.data.id,
         user_id: email,
         type: userInfo.data.type,
-        name : userInfo.data.user_name,
+        name: userInfo.data.user_name,
       };
       setUser(params);
       navigate(
@@ -116,14 +116,14 @@ export default function Login({token}) {
     <React.Fragment>
       {/* PWA 설치 버튼 */}
       {renderInstallPrompt()}
-      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 bg-indigo-300">
+      <div className="bg-e1dff0 flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 ">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             className="mx-auto h-32 w-auto"
             src={grapeLogo}
             alt="Your Company"
           />
-          <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-black">
+          <h2 className="mt-10 text-center text-2xl font-semibold leading-9 tracking-tight text-black">
             Poki에 오신 것을 환영합니다.
           </h2>
         </div>
@@ -133,7 +133,7 @@ export default function Login({token}) {
             <div>
               <label
                 htmlFor="userid"
-                className="block text-sm font-medium leading-6 text-black"
+                className="block text-lg leading-6 text-black"
               >
                 아이디
               </label>
@@ -152,7 +152,7 @@ export default function Login({token}) {
               <div className="flex items-center justify-between">
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium leading-6 text-black"
+                  className="block text-lg leading-6 text-black"
                 >
                   패스워드
                 </label>
@@ -174,7 +174,7 @@ export default function Login({token}) {
               <button
                 type="submit"
                 onClick={handleLogIn}
-                className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-black shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 text-white"
+                className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-lg font-semibold leading-6 text-black shadow-sm hover:bg-indigo-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 text-white"
               >
                 로그인
               </button>
@@ -189,7 +189,7 @@ export default function Login({token}) {
             </div>
           </div>
 
-          <p className="mt-10 text-center text-sm text-gray-800">
+          <p className="mt-10 text-center text-lg text-gray-800">
             가입하지 않으셨나요?{" "}
             <a
               href="/signup"

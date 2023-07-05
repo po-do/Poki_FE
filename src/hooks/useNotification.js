@@ -7,6 +7,7 @@ export function useNotification() {
   const [tokenFcm, setTokenFcm] = useState("");
 
   async function requestPermission() {
+    // console.log('requestPermission 호출')
     try {
       // FCM 요청
       const permission = await Notification.requestPermission();
@@ -30,7 +31,7 @@ export function useNotification() {
     requestPermission();
 
     const unsubscribe = onMessage(messaging, (payload) => {
-      console.log("Message received in the foreground: ", payload);
+      // console.log("Message received in the foreground: ", payload);
 
       // Create and display a browser notification
       if (Notification.permission === "granted") {

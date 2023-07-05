@@ -96,7 +96,7 @@ export default function LinkRegisterModal({ onClose }) {
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:item-center sm:p-6">
                 {/* 선물 검색 및 닫기 버튼 */}
                 <div className="mb-6">
-                  <h2 className="text-xl font-bold mb-2">선물 검색하기</h2>
+                  <h2 className="text-xl font-semibold mb-2">선물 검색하기</h2>
 
                   <div className="flex gap-3">
                     <input
@@ -109,14 +109,14 @@ export default function LinkRegisterModal({ onClose }) {
                     />
 
                     <button
-                      className="flex-none rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                      className="flex-none rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                       onClick={handleOpen}
                     >
                       검색
                     </button>
 
                     <button
-                      className="flex-none rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                      className="flex-none rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                       onClick={onClose}
                     >
                       닫기
@@ -156,7 +156,7 @@ export default function LinkRegisterModal({ onClose }) {
                       </div>
                       <div>
                         <h4
-                          className={`text-lg font-bold ${
+                          className={`text-lg font-semibold ${
                             selectedItem === index ? "text-gray-500" : ""
                           }`}
                         >
@@ -172,7 +172,7 @@ export default function LinkRegisterModal({ onClose }) {
                 <div className="mt-5 sm:mt-6">
                   <button
                     type="button"
-                    className="flex-none rounded-md bg-indigo-500 mt-4 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    className="flex-none rounded-md bg-indigo-500 mt-4 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     onClick={choiceWishList}
                   >
                     결정

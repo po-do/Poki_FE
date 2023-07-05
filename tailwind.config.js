@@ -2,7 +2,16 @@
 module.exports = {
   content: ["./src/**/*.{js,jsx}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        e1dff0: "#e1dff0",
+      },
+    },
+    fontFamily: {
+      Dovemayo_gothic: ["Dovemayo_gothic"],
+    },
   },
-  plugins: [],
+  plugins: [
+    require("tailwind-scrollbar-hide")
+  ],
 };

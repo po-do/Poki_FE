@@ -9,6 +9,8 @@ import {
 import { updateBoard, getBoardStatus } from "../../api/board.js";
 import SuccessModal from "../../components/Modal/SuccessModal";
 import FailModal from "../../components/Modal/FailModal";
+import { getAccessToken } from "../../api/auth.js";
+import { EventSourcePolyfill } from "event-source-polyfill";
 
 // 미션의 상태가 WAIT_APPROVAL 즉 완료대기상태인것을 보여주는 컴포넌트
 export default function MissionTempComplete() {
@@ -21,6 +23,29 @@ export default function MissionTempComplete() {
   const [overFailModal, setOverFailModal] = useState(false);
   const [showReturnModal, setShowReturnModal] = useState(false);
   const [showCreateBoardModal, setShowCreateBoardModal] = useState(false);
+
+  const handleConnect = () => {
+    const accessToken = getAccessToken();
+
+    const sse = new EventSourcePolyfill(
+      `${process.env.REACT_APP_API_URL}/board/grape/sse/user`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        heartbeatTimeout: 180000,
+      }
+    );
+
+    sse.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      setGrape(data.grape);
+    };
+  };
+
+  useEffect(() => {
+    handleConnect();
+  }, []);
 
   const openCreateBoardModal = () => {
     setShowCreateBoardModal(true);
@@ -65,29 +90,21 @@ export default function MissionTempComplete() {
     setShowReturnModal(false);
   };
 
-  const boardQuery = useQuery(["boardState"], () => {
-    return getBoardStatus();
-  });
-
   useEffect(() => {
-    if (boardQuery.isSuccess) {
-      const fetchedGrape = boardQuery?.data?.data?.grape;
-      setGrape(fetchedGrape);
-    }
-  }, [boardQuery.isSuccess, boardQuery.data]);
+    const getMission = async () => {
+      const missionsData = await missionReadChild();
+      const incompleteMissions = missionsData.filter(
+        (mission) => mission.status === "WAIT_APPROVAL"
+      );
+      setMissions(incompleteMissions);
+    };
 
-  useEffect(() => {
-    getMission();
-    // console.log("there is something fetching data!");
-  }, [boardQuery.isSuccess, boardQuery.data, missions]);
+    const intervalId = setInterval(getMission, 1000); // 1초마다 fetchData 함수 호출
 
-  const getMission = async () => {
-    const missionsData = await missionReadChild();
-    const incompleteMissions = missionsData.filter(
-      (mission) => mission.status === "WAIT_APPROVAL"
-    );
-    setMissions(incompleteMissions);
-  };
+    return () => {
+      clearInterval(intervalId); // 컴포넌트가 언마운트될 때 interval 정리
+    };
+  }, []);
 
   const { mutate: complete } = useMutation(setMissionStatusComplete, {
     onSuccess: () => {
@@ -154,7 +171,7 @@ export default function MissionTempComplete() {
   };
   // 반려
   const handleReject = () => {
-    console.log(selectedMissions);
+    // console.log(selectedMissions);
     selectedMissions.forEach((missionId) => {
       const param = {
         mission_id: missionId,
@@ -194,25 +211,25 @@ export default function MissionTempComplete() {
   };
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
+    <div>
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h3 className="text-xl font-bold mb-4">승인 대기 미션</h3>
+          <h3 className="text-2xl font-semibold mb-4">승인 대기 미션</h3>
           <div className="flex mt-4 sm:mt-0 sm:flex-none gap-2 justify-between">
-            <p className="mt-2 text-sm text-gray-700">
-              미션을 수행 완료했습니다. 아이에게 칭찬 포도알을 주세요. 
+            <p className="mt-2 ml-4 text-lg text-gray-700">
+              미션을 수행 완료했습니다. 아이에게 칭찬 포도알을 주세요.
             </p>
             <div className="flex gap-3">
               <button
                 type="button"
-                className="inline-flex items-center rounded-md  bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                className="whitespace-nowrap rounded-md  bg-white px-3 py-2 text-lg text-gray-900 ring-1 ring-gray-300 hover:bg-gray-100"
                 onClick={handleReject}
               >
-                반려
+                거절
               </button>
               <button
                 type="button"
-                className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                className="whitespace-nowrap block rounded-md bg-indigo-600 px-3 py-2 text-center text-lg text-white shadow-sm hover:bg-indigo-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
                 onClick={handlePublish}
               >
                 포도알 주기
@@ -221,7 +238,7 @@ export default function MissionTempComplete() {
           </div>
         </div>
       </div>
-      <div className="mt-8 overflow-y-auto max-h-60">
+      <div className="mt-8 overflow-y-auto scrollbar-hide max-h-60">
         <div className="-mx-4 -my-2">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
             <table className="min-w-full divide-y divide-gray-300">
@@ -229,7 +246,7 @@ export default function MissionTempComplete() {
                 <tr>
                   <th
                     scope="col"
-                    className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
+                    className="py-3.5 pl-4 pr-3 text-left text-base font-semibold text-gray-900 sm:pl-0"
                   >
                     완료된 미션
                   </th>
@@ -238,7 +255,7 @@ export default function MissionTempComplete() {
               <tbody className="divide-y divide-gray-200">
                 {missions.map((item) => (
                   <tr key={item.id} className="flex">
-                    <td className="py-4 pl-4 pr-4 text-sm font-medium gap-2">
+                    <td className="py-4 pl-4 pr-4 gap-2">
                       <input
                         id="comments"
                         aria-describedby="comments-description"
@@ -248,7 +265,7 @@ export default function MissionTempComplete() {
                         onChange={(e) => handleCheckboxChange(e, item.id)}
                       />
                     </td>
-                    <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0 overflow-hidden text-overflow-ellipsis whitespace-nowrap">
+                    <td className="py-4 pl-4 pr-3 text-base text-gray-900 sm:pl-0 overflow-hidden text-overflow-ellipsis whitespace-nowrap">
                       {item.content}
                     </td>
                   </tr>
@@ -274,7 +291,7 @@ export default function MissionTempComplete() {
         />
       )}
       {showReturnModal && (
-        <SuccessModal closeModal={closeShowReturnModal} message="반려 완료" />
+        <SuccessModal closeModal={closeShowReturnModal} message="거절 완료" />
       )}
       {showCreateBoardModal && (
         <FailModal

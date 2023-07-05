@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import classNames from "classnames";
 import Peer from "simple-peer";
 import io from "socket.io-client";
 import { useRecoilValue } from "recoil";
@@ -52,8 +53,8 @@ export default function Video() {
       ?.getUserMedia({ video: true, audio: true })
       .then((stream) => {
         setStream(stream);
-        console.log(myVideo.current);
-        console.log(stream, "stream");
+        // console.log(myVideo.current);
+        // console.log(stream, "stream");
         if (myVideo.current) myVideo.current.srcObject = stream;
       })
       .catch((err) => {
@@ -65,7 +66,7 @@ export default function Video() {
   /* 소켓 함수들은 useEffect로 한 번만 정의한다. */
   useEffect(() => {
     getMediaStream();
-    console.log("this is useEffect func.");
+    // console.log("this is useEffect func.");
 
     socket.on("me", (id) => {
       setMe(id);
@@ -95,7 +96,7 @@ export default function Video() {
   }, []);
 
   const callUser = (id) => {
-    console.log("calluser", "this is front");
+    // console.log("calluser", "this is front");
     const peer = new Peer({
       initiator: true,
       trickle: false,
@@ -115,7 +116,7 @@ export default function Video() {
     });
 
     socket.on("callAccepted", (signal) => {
-      console.log("callaccepted");
+      // console.log("callaccepted");
       setCallAccepted(true);
       peer.signal(signal);
     });
@@ -127,7 +128,7 @@ export default function Video() {
     try {
       setIsCalling(true);
       const connectedUser = await getConnectedUserId();
-      console.log("connectedUser", connectedUser);
+      // console.log("connectedUser", connectedUser);
       if (connectedUser) {
         const { connected_user, is_connected } = connectedUser.data;
         callUser(connected_user);
@@ -141,7 +142,6 @@ export default function Video() {
   };
 
   const answerCall = () => {
-    console.log("answercall");
     setCallAccepted(true);
     const peer = new Peer({
       initiator: false,
@@ -186,13 +186,13 @@ export default function Video() {
   return (
     <>
       <div className="flex justify-between ">
-        <h1 className="mt-2 ml-2 text-3xl tracking-tight text-black sm:text-4xl">
+        <h1 className="md:px-12 md:py-7 mt-2 ml-2 md:text-3xl px-6 py-3 text-2xl font-semibold tracking-tight text-black sm:text-4xl">
           영상통화
         </h1>
         <div className="flex justify-center items-center mt-2 mr-2">
           <button
             variant="contained"
-            className="h-14 w-14 text-white bg-indigo-500 rounded-full p-2 mr-2"
+            className="h-14 w-14 text-white bg-indigo-600 hover:bg-indigo-800 rounded-full p-2 mr-2"
             onClick={handleMuteClick}
           >
             {/* 음소거, 해제 */}
@@ -200,7 +200,7 @@ export default function Video() {
           </button>
           <button
             variant="contained"
-            className="h-14 w-14 text-white bg-indigo-500 rounded-full p-2"
+            className="h-14 w-14 text-white bg-indigo-600 hover:bg-indigo-800 rounded-full p-2"
             onClick={handleCameraClick}
           >
             {/* 카메라 켜기, 끄기 */}
@@ -219,7 +219,7 @@ export default function Video() {
               <button
                 color="primary"
                 onClick={callConnectedUser}
-                className={`h-14 w-14 text-white bg-indigo-500 rounded-full p-2 ml-2 ${
+                className={`h-14 w-14 text-white bg-indigo-600 rounded-full p-2 ml-2 ${
                   isCalling ? "opacity-50" : "hover:bg-indigo-800"
                 }`}
                 disabled={isCalling}
@@ -230,13 +230,15 @@ export default function Video() {
               </button>
             )}
             {idToCall}
-            {errorMessage}
+            <div className="absolute whitespace-nowrap left-6">
+              {errorMessage}
+            </div>
           </div>
           <div>
             {receivingCall && !callAccepted ? (
               <div className="caller">
                 <button
-                  className="bg-indigo-500 hover:bg-indigo-700 text-white h-14 w-14 rounded-full p-2 ml-2"
+                  className="bg-indigo-600 hover:bg-indigo-800 text-white h-14 w-14 rounded-full p-2 ml-2"
                   onClick={answerCall}
                 >
                   {/* 통화받기 */}
@@ -247,24 +249,40 @@ export default function Video() {
           </div>
         </div>
       </div>
-      <div className="p-4 mt-2 rounded-2xl border-4 md:m-4">
-        <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-4">
-          <div className="md:w-6/12">
+
+      <div className="p-4 mt-2">
+        <div
+          className={classNames(
+            callAccepted && !callEnded
+              ? "relative flex flex-col-reverse md:flex-row items-center"
+              : "relative flex flex-col items-center"
+          )}
+        >
+          <div
+            className={classNames({
+              "md:w-6/12": true,
+              "max-[720px]:w-4/5 max-[720px]:rounded-3xl max-[720px]:border-8 max-[720px]:border-white":
+                callAccepted && !callEnded,
+            })}
+          >
             <video
               playsInline
               muted
               ref={myVideo}
+              // ref={userVideo}
               autoPlay
-              className="md:w-full rounded-2xl"
+              className="md:w-full rounded-3xl md:border-8 md:border-white"
               style={{ transform: "scaleX(-1)" }}
             />
           </div>
+
           <div className="md:w-6/12">
             <video
               playsInline
               ref={userVideo}
+              // ref={myVideo}
               autoPlay
-              className="md:w-full rounded-2xl"
+              className="md:w-full rounded-3xl md:border-8 md:border-white"
             />
           </div>
         </div>
