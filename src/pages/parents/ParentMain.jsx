@@ -21,7 +21,7 @@ export default function ParentMain() {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-        heartbeatTimeout: ,
+        heartbeatTimeout: 90000,
       }
     );
 
@@ -38,7 +38,7 @@ export default function ParentMain() {
   const message = [
     "1. 위시리스트에서 자녀의 위시리스트를 확인하세요",
     "2. 자녀에게 줄 선물을 선택 후 포도 서비스가 시작됩니다",
-    "3. 아이가 포도를 완성하면 보상으로 선물을 주세요"
+    "3. 아이가 포도를 완성하면 보상으로 선물을 주세요",
   ];
 
   // 31모으면 눌러서 이벤트 발생해야함 아래꺼
